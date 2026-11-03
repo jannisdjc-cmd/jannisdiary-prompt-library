@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JannisDiary Prompt Library</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#fff9fb;color:#20151c;font-family:Arial,"Microsoft YaHei",sans-serif}
+header{background:#171117;color:#fff;padding:54px 22px;text-align:center}
+.logo{color:#ff9cc5;font-weight:bold;letter-spacing:2px}
+h1{font-size:clamp(32px,7vw,54px);margin:20px 0 12px;line-height:1.15}
+header p{color:#e8cbd8;line-height:1.7}
+.flower{font-size:35px}
+main{max-width:1050px;margin:auto;padding:30px 18px 70px}
+.intro{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.count{color:#9a4a70;font-weight:bold}
+input{width:100%;padding:17px;border:1px solid #e8ccd9;border-radius:12px;font-size:16px;margin:22px 0;background:white}
+.categories{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:30px}
+.categories button{border:1px solid #e9c7d7;background:white;border-radius:10px;padding:13px 8px;color:#38202d;font-size:14px;cursor:pointer}
+.categories button.active{background:#20151c;color:white;border-color:#20151c}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:17px}
+.card{background:white;border:1px solid #f0dce5;border-radius:15px;padding:22px;box-shadow:0 4px 18px #a66b8410}
+.tag{font-size:12px;color:#b1517e;font-weight:bold}
+.card h3{font-size:19px;margin:12px 0}
+.card p{font-size:14px;line-height:1.8;white-space:pre-wrap;color:#594b53}
+.copy{background:#ffb6d2;border:0;border-radius:9px;padding:12px 18px;font-weight:bold;cursor:pointer;margin-top:12px}
+footer{text-align:center;padding:35px 15px;background:#171117;color:#f6d8e6;font-size:13px}
+footer a{color:#ffb6d2}
+@media(min-width:700px){.categories{grid-template-columns:repeat(5,1fr)}}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">JANNISDIARY 🌸</div>
+<div class="flower">🌷 ✿ 🌸</div>
+<h1>让 ChatGPT<br>帮生活变简单一点。</h1>
+<p>实用 AI 提示词收藏库<br>免费浏览 · 一键复制 · 慢慢更新</p>
+</header>
+<main>
+<div class="intro">
+<h2>Prompt Library ✿</h2>
+<span class="count" id="count"></span>
+</div>
+<input id="search" placeholder="🔎 搜索你需要的提示词...">
+<div class="categories" id="categories"></div>
+<div class="grid" id="cards"></div>
+</main>
+<footer>
+<p>Made with ♡ by JannisDiary 🌸</p>
+<a href="https://instagram.com/jannisdiary__" target="_blank">Follow @jannisdiary__</a>
+</footer>
+<script>
+const data=[
+["日常生活","规划我的一周","请根据我的工作时间、生活习惯和目标，帮我规划一周的日程。先询问我的实际情况，再提供容易执行的安排。"],
+["工作效率","整理工作待办","请担任我的工作效率助手。根据以下待办事项：[填写]，帮我按优先级排序，并制定今天可以完成的行动清单。"],
+["内容创作","帮我想 IG 内容","我经营一个关于[主题]的 Instagram 账号，目标受众是[填写]。请提供10个自然、有生活感的发帖主题和吸引人的开头。"],
+["学习成长","快速学习新技能","我想学习[技能]，目前是零基础，每天有[时间]。请帮我设计一个循序渐进的30天学习计划。"],
+["AI 图片创作","生成真实产品照片","请帮我为[产品]设计一张真实自然的产品摄影图。风格为简约高级、自然光，保留产品原有外观和文字，比例为4:5。"],
+["进阶 AI 技巧","优化我的 Prompt","请分析以下提示词：[粘贴]。找出不够清楚的地方，并改写成更具体、可执行、容易获得好结果的版本。"],
+["AI Marketing 与小生意","分析小生意问题","请担任小生意营销顾问。我的行业是[填写]，目前遇到的问题是[填写]。请帮我分析可能原因和3个低成本改善方法。"],
+["社交媒体经营","制定 IG 发布计划","我的 IG 定位是[填写]，受众是[填写]。请帮我规划未来7天的内容，包含主题、Hook、画面建议和简短 Caption。"],
+["沟通与表达","把文字改得更自然","请帮我把以下文字改得自然、温柔、简短，像真人聊天，不要太官方，保留原本意思：[粘贴文字]。"],
+["个人成长与规划","整理我的目标","我目前想实现的目标是[填写]，遇到的困难是[填写]。请帮我拆成3个月的行动计划，每周都有具体的小步骤。"]
+];
+const names=["全部",...new Set(data.map(x=>x[0]))];
+let selected="全部";
+const cards=document.getElementById("cards");
+const cats=document.getElementById("categories");
+const search=document.getElementById("search");
+function render(){
+cats.innerHTML="";
+names.forEach(name=>{
+const b=document.createElement("button");
+b.textContent=name;
+b.className=name===selected?"active":"";
+b.onclick=()=>{selected=name;render()};
+cats.appendChild(b);
+});
+cards.innerHTML="";
+const q=search.value.trim().toLowerCase();
+const found=data.filter(x=>(selected==="全部"||x[0]===selected)&&x.join(" ").toLowerCase().includes(q));
+document.getElementById("count").textContent=found.length+" 个提示词";
+found.forEach((x,i)=>{
+const c=document.createElement("article");
+c.className="card";
+const tag=document.createElement("div");
+tag.className="tag";tag.textContent=x[0];
+const h=document.createElement("h3");
+h.textContent=x[1];
+const p=document.createElement("p");
+p.textContent=x[2];
+const b=document.createElement("button");
+b.className="copy";b.textContent="复制提示词 ↗";
+b.onclick=async()=>{
+try{
+await navigator.clipboard.writeText(x[2]);
+b.textContent="已复制 ✓";
+setTimeout(()=>b.textContent="复制提示词 ↗",1800);
+}catch(e){alert("复制失败，请长按提示词手动复制");}
+};
+c.append(tag,h,p,b);
+cards.appendChild(c);
+});
+if(!found.length)cards.textContent="暂时找不到相关提示词 🌷";
+}
+search.addEventListener("input",render);
+render();
+</script>
+</body>
+</html>
