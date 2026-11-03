@@ -4,109 +4,295 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JannisDiary Prompt Library</title>
+<title>JannisDiary ✿ AI 提示词收藏库</title>
 <style>
+:root{--pink:#f8d9e3;--rose:#c96e91;--cream:#fffaf8;--ink:#292128;--muted:#7c6d75}
 *{box-sizing:border-box}
-body{margin:0;background:#fff9fb;color:#20151c;font-family:Arial,"Microsoft YaHei",sans-serif}
-header{background:#171117;color:#fff;padding:54px 22px;text-align:center}
-.logo{color:#ff9cc5;font-weight:bold;letter-spacing:2px}
-h1{font-size:clamp(32px,7vw,54px);margin:20px 0 12px;line-height:1.15}
-header p{color:#e8cbd8;line-height:1.7}
-.flower{font-size:35px}
-main{max-width:1050px;margin:auto;padding:30px 18px 70px}
-.intro{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.count{color:#9a4a70;font-weight:bold}
-input{width:100%;padding:17px;border:1px solid #e8ccd9;border-radius:12px;font-size:16px;margin:22px 0;background:white}
-.categories{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:30px}
-.categories button{border:1px solid #e9c7d7;background:white;border-radius:10px;padding:13px 8px;color:#38202d;font-size:14px;cursor:pointer}
-.categories button.active{background:#20151c;color:white;border-color:#20151c}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:17px}
-.card{background:white;border:1px solid #f0dce5;border-radius:15px;padding:22px;box-shadow:0 4px 18px #a66b8410}
-.tag{font-size:12px;color:#b1517e;font-weight:bold}
-.card h3{font-size:19px;margin:12px 0}
-.card p{font-size:14px;line-height:1.8;white-space:pre-wrap;color:#594b53}
-.copy{background:#ffb6d2;border:0;border-radius:9px;padding:12px 18px;font-weight:bold;cursor:pointer;margin-top:12px}
-footer{text-align:center;padding:35px 15px;background:#171117;color:#f6d8e6;font-size:13px}
-footer a{color:#ffb6d2}
-@media(min-width:700px){.categories{grid-template-columns:repeat(5,1fr)}}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:"Noto Sans SC","Microsoft YaHei",Arial,sans-serif}
+button,input{font:inherit}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:1120px;margin:auto;padding:0 22px}
+header{position:sticky;top:0;z-index:10;background:#fffaf8ed;border-bottom:1px solid #f0e3e6;backdrop-filter:blur(12px)}
+nav{height:68px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:Georgia,serif;font-size:25px;font-style:italic;font-weight:bold}
+.logo span{color:var(--rose)}
+.navright{display:flex;gap:22px;align-items:center;font-size:13px}
+.pill{background:var(--ink);color:white;padding:12px 17px;border-radius:30px}
+.hero{padding:76px 0 90px;overflow:hidden}
+.heroGrid{display:grid;grid-template-columns:1.1fr .9fr;gap:35px;align-items:center}
+.eyebrow{color:var(--rose);font-size:11px;letter-spacing:2px;font-weight:700}
+h1{font-family:Georgia,"Noto Serif SC",serif;font-size:clamp(54px,7vw,92px);line-height:1.13;letter-spacing:-2px;margin:22px 0}
+h1 em{font-style:normal;color:var(--rose)}
+.lead{font-size:22px;font-weight:600;letter-spacing:3px}
+.desc{color:var(--muted);font-size:15px;line-height:2;max-width:480px}
+.cta{display:inline-block;background:var(--ink);color:white;padding:16px 26px;border-radius:7px;margin-top:18px;font-size:14px}
+.note{font-size:12px;color:var(--muted);margin-top:23px}
+.art{min-height:420px;background:#f6e1e6;border-radius:48% 48% 12px 12px;position:relative;display:flex;align-items:center;justify-content:center}
+.art:before{content:"";position:absolute;inset:25px;border:1px solid #fff9;border-radius:48% 48% 10px 10px}
+.bloom{font-size:clamp(100px,15vw,190px);filter:drop-shadow(0 18px 14px #a75a7855);transform:rotate(-12deg)}
+.artLabel{position:absolute;bottom:32px;right:-10px;background:white;padding:16px 25px;font-family:Georgia,serif;font-style:italic;box-shadow:0 10px 30px #a75a7822}
+.strip{background:#f9e7eb;padding:23px 0;text-align:center;color:#8d5a70;font-size:13px;letter-spacing:2px}
+section.content{padding:80px 0}
+.sectionHead{text-align:center;margin-bottom:35px}
+.kicker{font-family:Georgia,serif;color:var(--rose);font-style:italic}
+h2{font-family:Georgia,"Noto Serif SC",serif;font-size:clamp(30px,4vw,43px);margin:10px 0}
+.sub{color:var(--muted);font-size:14px}
+.categories{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.category{padding:22px 10px;border:1px solid #efdde2;background:#fff;border-radius:12px;cursor:pointer;text-align:center;transition:.2s}
+.category:hover,.category.active{background:#f9e0e9;border-color:#e6a6bf}
+.category .emoji{display:block;font-size:25px;margin-bottom:9px}
+.category strong{font-size:13px}
+.library{background:#fff3f5;padding:75px 0}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:24px}
+.search{width:100%;max-width:370px;padding:15px 18px;border:1px solid #e8cdd6;border-radius:9px;background:white;outline:none}
+.search:focus{border-color:var(--rose)}
+.counter{font-size:13px;color:var(--muted);white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:white;border:1px solid #f0e1e6;border-radius:13px;padding:25px;display:flex;flex-direction:column;min-height:230px}
+.tag{color:var(--rose);font-size:12px;font-weight:700}
+.card h3{font-size:19px;margin:15px 0 10px}
+.preview{font-size:13px;line-height:1.85;color:var(--muted);white-space:pre-wrap;flex:1}
+.copy{margin-top:20px;border:1px solid #edb6c9;background:#fff7fa;color:#a44f73;border-radius:8px;padding:12px;cursor:pointer}
+.copy:hover{background:#f7dbe5}
+.empty{text-align:center;padding:45px;color:var(--muted)}
+footer{background:#292128;color:white;text-align:center;padding:55px 20px}
+footer .logo{font-size:32px}
+footer p{color:#e3c8d2;font-size:13px}
+footer a.ig{color:#ffc5d9;font-size:13px}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.categories{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:620px){
+.navright .hide{display:none}
+.hero{padding:50px 0 60px}
+.heroGrid{grid-template-columns:1fr}
+h1{font-size:56px}
+.art{min-height:290px;margin:10px 15px 0}
+.bloom{font-size:125px}
+.categories{grid-template-columns:repeat(2,1fr)}
+.grid{grid-template-columns:1fr}
+.toolbar{flex-direction:column;align-items:stretch}
+.search{max-width:none}
+section.content,.library{padding:55px 0}
+}
 </style>
 </head>
 <body>
 <header>
-<div class="logo">JANNISDIARY 🌸</div>
-<div class="flower">🌷 ✿ 🌸</div>
-<h1>让 ChatGPT<br>帮生活变简单一点。</h1>
-<p>实用 AI 提示词收藏库<br>免费浏览 · 一键复制 · 慢慢更新</p>
-</header>
-<main>
-<div class="intro">
-<h2>Prompt Library ✿</h2>
-<span class="count" id="count"></span>
+<div class="wrap">
+<nav>
+<a class="logo" href="#top">JannisDiary<span> ✿</span></a>
+<div class="navright">
+<a class="hide" href="#categories">分类浏览</a>
+<a class="hide" href="#library">提示词</a>
+<a class="pill" href="#library">★ 免费收藏</a>
 </div>
-<input id="search" placeholder="🔎 搜索你需要的提示词...">
-<div class="categories" id="categories"></div>
+</nav>
+</div>
+</header>
+
+<main id="top">
+<section class="hero">
+<div class="wrap heroGrid">
+<div>
+<div class="eyebrow">A LITTLE GIFT FROM JANNISDIARY ✿</div>
+<h1>AI 提示词<br><em>收藏库。</em></h1>
+<div class="lead">实用 · 简单 · 可复制</div>
+<p class="desc">把生活、工作、创作中实用的 ChatGPT 提示词，整理成一份小小的灵感收藏。找到喜欢的，轻轻一点就能复制使用。🌷</p>
+<a class="cta" href="#categories">开始探索提示词 ↗</a>
+<p class="note">✿ 99 个实用提示词 · 10 大分类 · 免费开放</p>
+</div>
+<div class="art">
+<div class="bloom">🌸</div>
+<div class="artLabel">A little inspiration ✿</div>
+</div>
+</div>
+</section>
+
+<div class="strip">✿ MADE FOR EVERYDAY LIFE · WITH LOVE ✿</div>
+
+<section class="content" id="categories">
+<div class="wrap">
+<div class="sectionHead">
+<div class="kicker">Find your inspiration</div>
+<h2>热门分类 ✿</h2>
+<p class="sub">从你今天需要的开始，慢慢探索。</p>
+</div>
+<div class="categories" id="categoryList"></div>
+</div>
+</section>
+
+<section class="library" id="library">
+<div class="wrap">
+<div class="sectionHead">
+<div class="kicker">The Prompt Collection</div>
+<h2>实用提示词 ✨</h2>
+<p class="sub">找到喜欢的，点击就能复制。</p>
+</div>
+<div class="toolbar">
+<input class="search" id="search" placeholder="🔎 搜索提示词、主题或分类...">
+<span class="counter" id="counter"></span>
+</div>
 <div class="grid" id="cards"></div>
+<div class="empty" id="empty" hidden>暂时找不到相关提示词 🌷</div>
+</div>
+</section>
 </main>
+
 <footer>
-<p>Made with ♡ by JannisDiary 🌸</p>
-<a href="https://instagram.com/jannisdiary__" target="_blank">Follow @jannisdiary__</a>
+<div class="logo">JannisDiary ✿</div>
+<p>让 AI 帮生活变简单一点。</p>
+<a class="ig" href="https://instagram.com/jannisdiary__" target="_blank" rel="noopener">Instagram @jannisdiary__ ↗</a>
+<p>Made with ♡ by JannisDiary</p>
 </footer>
+
 <script>
-const data=[
-["日常生活","规划我的一周","请根据我的工作时间、生活习惯和目标，帮我规划一周的日程。先询问我的实际情况，再提供容易执行的安排。"],
-["工作效率","整理工作待办","请担任我的工作效率助手。根据以下待办事项：[填写]，帮我按优先级排序，并制定今天可以完成的行动清单。"],
-["内容创作","帮我想 IG 内容","我经营一个关于[主题]的 Instagram 账号，目标受众是[填写]。请提供10个自然、有生活感的发帖主题和吸引人的开头。"],
-["学习成长","快速学习新技能","我想学习[技能]，目前是零基础，每天有[时间]。请帮我设计一个循序渐进的30天学习计划。"],
-["AI 图片创作","生成真实产品照片","请帮我为[产品]设计一张真实自然的产品摄影图。风格为简约高级、自然光，保留产品原有外观和文字，比例为4:5。"],
-["进阶 AI 技巧","优化我的 Prompt","请分析以下提示词：[粘贴]。找出不够清楚的地方，并改写成更具体、可执行、容易获得好结果的版本。"],
-["AI Marketing 与小生意","分析小生意问题","请担任小生意营销顾问。我的行业是[填写]，目前遇到的问题是[填写]。请帮我分析可能原因和3个低成本改善方法。"],
-["社交媒体经营","制定 IG 发布计划","我的 IG 定位是[填写]，受众是[填写]。请帮我规划未来7天的内容，包含主题、Hook、画面建议和简短 Caption。"],
-["沟通与表达","把文字改得更自然","请帮我把以下文字改得自然、温柔、简短，像真人聊天，不要太官方，保留原本意思：[粘贴文字]。"],
-["个人成长与规划","整理我的目标","我目前想实现的目标是[填写]，遇到的困难是[填写]。请帮我拆成3个月的行动计划，每周都有具体的小步骤。"]
+const categories=[
+["日常生活","🌷"],
+["工作效率","💻"],
+["内容创作","✨"],
+["学习成长","📚"],
+["AI 图片创作","🎨"],
+["进阶 AI 技巧","💡"],
+["AI Marketing 与小生意","🛍️"],
+["社交媒体经营","📱"],
+["沟通与表达","💌"],
+["个人成长与规划","🌸"]
 ];
-const names=["全部",...new Set(data.map(x=>x[0]))];
-let selected="全部";
+
+const titles=[
+["规划一周生活","安排每日时间","制定购物清单","规划家庭旅行","整理家务计划","安排健康饮食","设计周末活动","制定省钱计划","整理生活烦恼","建立生活习惯"],
+["整理工作待办","优化工作流程","撰写工作邮件","总结会议重点","制作工作报告","安排项目进度","整理 Excel 数据","改善团队沟通","制作工作检查清单","提高工作效率"],
+["想 IG 内容主题","撰写自然 Caption","设计吸引人的 Hook","规划短视频脚本","生成内容日历","改写产品介绍","设计故事型文案","整理拍摄分镜","优化广告文案","寻找创作灵感"],
+["制定学习计划","解释复杂概念","练习英语对话","总结学习笔记","制作复习题目","学习新技能","设计每日练习","分析学习困难","模拟面试练习","整理知识重点"],
+["设计产品摄影","生成生活场景图","设计 IG 封面","制作广告视觉","生成插画风格","设计品牌配色","优化图片提示词","制作角色设定","规划摄影构图","生成节日宣传图"],
+["优化我的 Prompt","拆解复杂任务","设计 AI 工作流程","比较不同方案","建立分析框架","检查 AI 回答","制定研究问题","让 AI 扮演专家","建立提示词模板","提升输出质量"],
+["分析生意问题","寻找目标客户","制定营销计划","优化服务介绍","设计客户咨询流程","规划自动回复","分析竞争对手","设计促销活动","制作客户 FAQ","改善获客流程"],
+["规划 IG 内容","优化个人简介","设计 Reel 开头","制作 Story 互动","分析内容表现","寻找受众痛点","制定发布节奏","整理 Hashtag","设计 Carousel","建立个人品牌"],
+["改写自然消息","撰写礼貌回复","表达不同意见","准备客户回复","整理复杂想法","写感谢消息","练习自我介绍","优化沟通语气","准备会议发言","写温柔鼓励的话"],
+["整理年度目标","制定三个月计划","分析个人优势","建立成长习惯","安排学习与生活","制定财务目标","回顾每周进展","探索未来方向","减少拖延习惯"]
+];
+
+const prompts=[];
+titles.forEach((group,ci)=>{
+group.forEach((title,ti)=>{
+const number=prompts.length+1;
+prompts.push({
+id:number,
+category:categories[ci][0],
+title:title,
+text:`请担任一位有经验、善于沟通的${categories[ci][0]}顾问。
+
+我希望你帮我完成这个任务：${title}。
+
+我的实际情况：
+1. 我的目标：[填写]
+2. 我的背景或目前状况：[填写]
+3. 我的主要困难：[填写]
+4. 我的时间、预算或其他限制：[填写]
+5. 我希望得到的结果：[填写]
+
+请按照以下方式协助我：
+
+1. 先理解我的目标和实际情况。
+2. 分析目前最重要的3个问题或重点。
+3. 提供具体、现实、容易执行的建议。
+4. 将建议整理成清楚的步骤或表格。
+5. 给我一个今天就可以开始的小行动。
+
+要求：
+- 使用自然、容易理解的中文。
+- 不要给空泛的建议。
+- 尽量提供实际例子。
+- 如果缺少重要信息，请先问我一个最关键的问题。`
+});
+});
+});
+
+let active="全部";
+const categoryList=document.getElementById("categoryList");
 const cards=document.getElementById("cards");
-const cats=document.getElementById("categories");
 const search=document.getElementById("search");
-function render(){
-cats.innerHTML="";
-names.forEach(name=>{
-const b=document.createElement("button");
-b.textContent=name;
-b.className=name===selected?"active":"";
-b.onclick=()=>{selected=name;render()};
-cats.appendChild(b);
-});
-cards.innerHTML="";
-const q=search.value.trim().toLowerCase();
-const found=data.filter(x=>(selected==="全部"||x[0]===selected)&&x.join(" ").toLowerCase().includes(q));
-document.getElementById("count").textContent=found.length+" 个提示词";
-found.forEach((x,i)=>{
-const c=document.createElement("article");
-c.className="card";
-const tag=document.createElement("div");
-tag.className="tag";tag.textContent=x[0];
-const h=document.createElement("h3");
-h.textContent=x[1];
-const p=document.createElement("p");
-p.textContent=x[2];
-const b=document.createElement("button");
-b.className="copy";b.textContent="复制提示词 ↗";
-b.onclick=async()=>{
-try{
-await navigator.clipboard.writeText(x[2]);
-b.textContent="已复制 ✓";
-setTimeout(()=>b.textContent="复制提示词 ↗",1800);
-}catch(e){alert("复制失败，请长按提示词手动复制");}
+const counter=document.getElementById("counter");
+const empty=document.getElementById("empty");
+
+function renderCategories(){
+categoryList.innerHTML="";
+[["全部","✿"],...categories].forEach(([name,emoji])=>{
+const btn=document.createElement("button");
+btn.className="category"+(active===name?" active":"");
+const icon=document.createElement("span");
+icon.className="emoji";
+icon.textContent=emoji;
+const label=document.createElement("strong");
+label.textContent=name;
+btn.append(icon,label);
+btn.onclick=()=>{
+active=name;
+renderCategories();
+renderCards();
+document.getElementById("library").scrollIntoView({behavior:"smooth"});
 };
-c.append(tag,h,p,b);
-cards.appendChild(c);
+categoryList.appendChild(btn);
 });
-if(!found.length)cards.textContent="暂时找不到相关提示词 🌷";
 }
-search.addEventListener("input",render);
-render();
+
+function renderCards(){
+const query=search.value.trim().toLowerCase();
+const found=prompts.filter(p=>
+(active==="全部"||p.category===active)&&
+(p.title+" "+p.category+" "+p.text).toLowerCase().includes(query)
+);
+counter.textContent="显示 "+found.length+" / "+prompts.length+" 个提示词";
+cards.innerHTML="";
+empty.hidden=found.length>0;
+
+found.forEach(p=>{
+const card=document.createElement("article");
+card.className="card";
+const tag=document.createElement("div");
+tag.className="tag";
+tag.textContent=String(p.id).padStart(2,"0")+" · "+p.category;
+const title=document.createElement("h3");
+title.textContent=p.title;
+const preview=document.createElement("div");
+preview.className="preview";
+preview.textContent=p.text;
+preview.style.maxHeight="120px";
+preview.style.overflow="hidden";
+const expand=document.createElement("button");
+expand.className="copy";
+expand.textContent="查看完整提示词 ＋";
+expand.onclick=()=>{
+const opened=preview.style.maxHeight==="none";
+preview.style.maxHeight=opened?"120px":"none";
+expand.textContent=opened?"查看完整提示词 ＋":"收起提示词 −";
+};
+const copy=document.createElement("button");
+copy.className="copy";
+copy.textContent="复制完整 Prompt ↗";
+copy.onclick=async()=>{
+try{
+await navigator.clipboard.writeText(p.text);
+copy.textContent="复制成功 ✓";
+setTimeout(()=>copy.textContent="复制完整 Prompt ↗",1800);
+}catch(e){
+const ta=document.createElement("textarea");
+ta.value=p.text;
+document.body.appendChild(ta);
+ta.select();
+const ok=document.execCommand("copy");
+ta.remove();
+copy.textContent=ok?"复制成功 ✓":"请长按文字复制";
+setTimeout(()=>copy.textContent="复制完整 Prompt ↗",2000);
+}
+};
+card.append(tag,title,preview,expand,copy);
+cards.appendChild(card);
+});
+}
+search.addEventListener("input",renderCards);
+renderCategories();
+renderCards();
 </script>
 </body>
 </html>
